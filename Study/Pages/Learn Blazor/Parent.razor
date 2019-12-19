@@ -1,0 +1,19 @@
+﻿@page "/ParentComponent"
+
+<h1 class="text-danger">Parent Child Compoenent </h1>
+
+<Study.Pages.Components.Child Title="Passed in from Parent" OnClickMethod = "@ShowMessage">
+    
+    This content is displaed between the child component tag inside the parent component
+</Study.Pages.Components.Child>
+
+<p> @msgText</p>
+
+@code {
+
+    private string msgText;
+    private void ShowMessage()
+    {
+        msgText = "Blazing text from Parent!";
+    }
+}

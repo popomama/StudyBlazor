@@ -1,0 +1,11 @@
+﻿@inherits  LearnRazorBase
+@page "/learnblazor"
+
+
+<h3 class="text-info pb-3" >@txtWelcome</h3>
+
+<p> On Change <input @bind="name" @bind:event="oninput" /></p>
+<p> I am @name</p>
+<p><button @onclick="getname">Suprise me</button></p>
+
+

@@ -1,0 +1,119 @@
+﻿@page "/category"
+@using Study.Services
+@using Study.Data
+@inherits OwningComponentBase<CategoryService>
+
+@if (categories == null)
+{
+    <p><em>Loading or no categories exist</em></p>
+}
+else
+{
+    <div class="container border p-3">
+        <div class="row">
+            <div class="col-5">
+                <h3 class="text-info">
+                    Catagory List
+                </h3>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-info form-control" @onclick="AddNewCategory">
+                    Add New Product
+                </button>
+            </div>
+        </div>
+        <div class="row pt-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cat in categories)
+                    {
+                        <tr>
+                            <td>@cat.Name</td>
+                            <td>
+                                <button class="btn btn-primary" style="width:150px">Edit</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+}
+
+@if (ShowPopup)
+{
+    <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <EditForm Model="@cat" OnValidSubmit="@ValidSubmit">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="text-info">Category</h3>
+                        <button type="button" class="close" @onclick="ClosePopup">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-9">
+                                <div class="row py-2">
+                                    <div class="col-4">
+                                        Ctegory Name
+                                    </div>
+                                    <div class="col-8">
+                                        <input class="form-control" type="text" @bind="cat.Name" />
+                                    </div>
+                                </div>
+                                <div class="row py-2">
+                                    <div class="col-4">
+
+                                    </div>
+                                    <div class="col-8">
+                                        <button class="btn btn-primary form-control" type="submit">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+}
+@code {
+
+    List<Category> categories;
+    bool ShowPopup = false;
+    Category cat = new Category();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        categories = Service.GetCategories();
+    }
+
+    void AddNewCategory()
+    {
+        cat.Id = 0;
+        ShowPopup = true;
+    }
+
+    void ClosePopup()
+    {
+        ShowPopup = false;
+    }
+
+    void ValidSubmit()
+    {
+        var result = false;
+        ShowPopup = false;
+        result = Service.CreateCategory(cat);
+        categories = Service.GetCategories();
+    }
+}
