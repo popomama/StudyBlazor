@@ -18,7 +18,7 @@ else
             </div>
             <div class="col-3">
                 <button class="btn btn-info form-control" @onclick="AddNewCategory">
-                    Add New Product
+                    Add New Category
                 </button>
             </div>
         </div>
@@ -36,7 +36,7 @@ else
                         <tr>
                             <td>@cat.Name</td>
                             <td>
-                                <button class="btn btn-primary" style="width:150px">Edit</button>
+                                <button class="btn btn-primary" style="width:150px" @onclick="(()=> EditCategory(cat))">Edit</button>
                             </td>
                         </tr>
                     }
@@ -54,12 +54,14 @@ else
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="text-info">Category</h3>
+                        <h3 class="text-info">@(cat.Id>0 ? "Update Category": "Create Catetory" )</h3>
                         <button type="button" class="close" @onclick="ClosePopup">
                             <span aria-hidden="true">X</span>
                         </button>
                     </div>
                     <div class="modal-body">
+                        <DataAnnotationsValidator></DataAnnotationsValidator> 
+                        <ValidationSummary></ValidationSummary>
                         <div class="row">
                             <div class="col-9">
                                 <div class="row py-2">
@@ -71,12 +73,18 @@ else
                                     </div>
                                 </div>
                                 <div class="row py-2">
-                                    <div class="col-4">
 
-                                    </div>
-                                    <div class="col-8">
+                                    <div class="offset-4 col">
                                         <button class="btn btn-primary form-control" type="submit">Submit</button>
                                     </div>
+                                    @if (cat.Id > 0)
+                                    {
+                                        <div class="col">
+                                            <button class="btn btn-danger form-control" 
+                                                    @onclick="DeleteCategory"
+                                                    type="submit">Delete</button>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -100,10 +108,28 @@ else
 
     void AddNewCategory()
     {
+        cat = new Category();
         cat.Id = 0;
         ShowPopup = true;
     }
 
+
+    void DeleteCategory()
+    {
+       
+        ShowPopup = false;
+        var result = Service.DeleteCategory(cat);
+        categories.Clear();
+        categories = Service.GetCategories();
+    }
+
+
+    void EditCategory(Category c)
+    {
+        //cat.Id = 0;
+        cat = c;
+        ShowPopup = true;
+    }
     void ClosePopup()
     {
         ShowPopup = false;
@@ -113,7 +139,16 @@ else
     {
         var result = false;
         ShowPopup = false;
-        result = Service.CreateCategory(cat);
-        categories = Service.GetCategories();
+        if (cat.Id > 0)
+        {
+            result = Service.UpdateCategory(cat);
+        }
+        else
+        {
+
+            result = Service.CreateCategory(cat);
+
+            categories = Service.GetCategories();
+        }
     }
 }
