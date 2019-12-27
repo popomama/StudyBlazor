@@ -1,5 +1,25 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@using Study.Data
+@using Study.Services
+@inherits OwningComponentBase<ProductService>
 
-Welcome to your new app.
+<div class="row">
+
+    @foreach(var prod in listProduct)
+    {
+       <Study.Pages.Components.IndividualProduct product="prod"></Study.Pages.Components.IndividualProduct>
+    }
+</div>
+
+
+
+@code{
+    List<Product> listProduct = new List<Product>();
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+        listProduct = Service.GetProducts();
+        }
+}
